@@ -1,0 +1,16 @@
+[submodule "libs/crypto-utils"]
+    branch = main
+	path = libs/crypto-utils
+	url = https://github.com/shamil8/crypto-utils.git
+[submodule "libs/logger"]
+    branch = main
+	path = libs/logger
+	url = https://github.com/shamil8/nest-logger.git
+[submodule "libs/database"]
+    branch = main
+	path = libs/database
+	url = https://github.com/shamil8/nest-database.git
+[submodule "libs/rabbit"]
+    branch = main
+	path = libs/rabbit
+	url = https://github.com/shamil8/nest-rabbit.git

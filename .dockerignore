@@ -1,0 +1,36 @@
+# Dependency directories
+node_modules
+
+# IDE / Editor
+.idea
+
+# Git
+.git
+.gitignore
+.gitlab-ci.yml
+
+# build files and tests
+dist
+
+.env
+.env.local
+.eslintrc.js
+.prettierrc
+
+# Docker files
+docker
+.dockerignore
+
+README.md
+
+# docs
+/documentation
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*

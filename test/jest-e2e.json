@@ -1,0 +1,13 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/crypto-utils/(.*)": "<rootDir>/libs/crypto-utils/src/$1",
+    "@app/contracts/(.*)": "<rootDir>/libs/contracts/$1"
+  }
+}

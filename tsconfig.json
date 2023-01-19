@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization":true,
+    "noImplicitAny": true,
+    "strict": true,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "esModuleInterop": true,                   /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@app/crypto-utils/*": [
+        "libs/crypto-utils/src/*"
+      ],
+      "@app/logger/*": [
+        "libs/logger/src/*"
+      ],
+      "@app/database/*": [
+        "libs/database/src/*"
+      ],
+      "@app/rabbit/*": [
+        "libs/rabbit/src/*"
+      ],
+      "@app/web3/*": [
+        "libs/web3/src/*"
+      ]
+    }
+  }
+}
