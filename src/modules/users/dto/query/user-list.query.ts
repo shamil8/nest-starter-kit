@@ -16,7 +16,7 @@ export class UserListQuery {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  page: number = 1;
+  page = 1;
 
   @ApiProperty({
     example: 25,
@@ -25,5 +25,5 @@ export class UserListQuery {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  take: number = 15;
+  take = 15;
 }

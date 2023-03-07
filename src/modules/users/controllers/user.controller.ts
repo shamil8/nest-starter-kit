@@ -10,10 +10,10 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { wrongRequestApiResource } from '@app/crypto-utils/documentation/wrong-request-api-response';
 
-import { UserService } from '../services/user.service';
 import { StoreUserCommand } from '../dto/command/store-user.command';
-import { UserDto } from '../dto/resource/user.dto';
 import { UserListQuery } from '../dto/query/user-list.query';
+import { UserDto } from '../dto/resource/user.dto';
+import { UserService } from '../services/user.service';
 
 @ApiTags('Users')
 @Controller({

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { JwtAuthInterface } from '../interfaces/jwt-auth.interface';
 
 @Injectable()
@@ -7,7 +8,7 @@ export class AuthConfig {
   /** JWT auth secrets */
   public jwt: JwtAuthInterface;
 
-  constructor(private configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     this.jwt = {
       access: {
         secret: this.configService.getOrThrow<string>('JWT_ACCESS_SECRET'),

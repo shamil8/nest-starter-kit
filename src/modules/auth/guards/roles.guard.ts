@@ -1,8 +1,8 @@
-import { CanActivate, ExecutionContext, Type, mixin } from '@nestjs/common';
+import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 
 import { UserRole } from '../../users/enums/user-role';
-import { JwtAccessGuard } from './jwt-access.guard';
 import { RequestInterface } from '../interfaces/request.interface';
+import { JwtAccessGuard } from './jwt-access.guard';
 
 export const PermissionGuard = (permission: UserRole[]): Type<CanActivate> => {
   class PermissionGuardMixin extends JwtAccessGuard {

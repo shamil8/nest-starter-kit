@@ -1,13 +1,13 @@
+import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
-import { ValidationPipe } from '@nestjs/common';
 
+import { AppModule } from './app.module';
 import config from './config';
 import swaggerConfig from './config/swagger.config';
-import { AppModule } from './app.module';
 import { AppExceptionsFilter } from './filters/app.exceptions.filter';
-import { AppValidationPipe } from './filters/app.validation.pipe';
 import { ResponseInterceptor } from './filters/app.response.interceptor';
+import { AppValidationPipe } from './filters/app.validation.pipe';
 
 async function main(): Promise<void> {
   const app = await NestFactory.create(AppModule);

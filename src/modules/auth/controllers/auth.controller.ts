@@ -6,6 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
 import { AuthCommand } from '../dto/command/auth.command';
 import { JwtResponseInterface } from '../interfaces/jwt-response.interface';
 import { AuthService } from '../services/auth.service';

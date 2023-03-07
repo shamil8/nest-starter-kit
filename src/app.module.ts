@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { LoggerModule } from '@app/logger/logger.module';
 import { DatabaseModule } from '@app/database/database.module';
+import { LoggerModule } from '@app/logger/logger.module';
 import { RabbitModule } from '@app/rabbit/rabbit.module';
 
 import { AuthModule } from './modules/auth/auth.module';

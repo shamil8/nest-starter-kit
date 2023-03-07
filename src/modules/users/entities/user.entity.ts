@@ -1,6 +1,6 @@
-import { Entity, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
-import { genSaltSync, hashSync, compareSync } from 'bcrypt';
 import { BaseEntity } from '@app/database/entities/base.entity';
+import { compareSync, genSaltSync, hashSync } from 'bcrypt';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 
 import { UserRole } from '../enums/user-role';
 

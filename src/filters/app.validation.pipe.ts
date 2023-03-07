@@ -23,6 +23,7 @@ export class AppValidationPipe implements PipeTransform<any> {
       const messages = errors.map((err) => {
         if (!err.constraints) {
           console.error('AppValidationPipe: Can not find constraints', err);
+
           return err;
         }
 

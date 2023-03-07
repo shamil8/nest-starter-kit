@@ -2,12 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoggerService } from '@app/logger/services/logger.service';
 
-import { AuthCommand } from '../dto/command/auth.command';
+import { UserService } from '../../users/services/user.service';
 import { AuthConfig } from '../config/auth.config';
+import { AuthCommand } from '../dto/command/auth.command';
 import { AuthServiceError } from '../enums/auth-service-error';
 import { JwtResponseInterface } from '../interfaces/jwt-response.interface';
 import { JwtValidatePayloadInterface } from '../interfaces/jwt-validate-payload.interface';
-import { UserService } from '../../users/services/user.service';
 @Injectable()
 export class AuthService {
   constructor(

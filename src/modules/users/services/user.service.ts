@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { FindOneOptions } from 'typeorm';
 import { LoggerService } from '@app/logger/services/logger.service';
+import { FindOneOptions } from 'typeorm';
 
-import { UserRepository } from '../repositories/user.repository';
 import { StoreUserCommand } from '../dto/command/store-user.command';
-import { UserDto } from '../dto/resource/user.dto';
 import { UserListQuery } from '../dto/query/user-list.query';
+import { UserDto } from '../dto/resource/user.dto';
 import { UserEntity } from '../entities/user.entity';
+import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
 export class UserService {

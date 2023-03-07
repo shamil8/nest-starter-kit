@@ -1,16 +1,16 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { getUUID } from '@app/crypto-utils/functions/export-settings';
 import { DatabaseModule } from '@app/database/database.module';
 
-import { AuthController } from './auth.controller';
-import { AuthService } from '../services/auth.service';
-import { AuthCommand } from '../dto/command/auth.command';
 import { UserRepository } from '../../users/repositories/user.repository';
+import { AuthCommand } from '../dto/command/auth.command';
 import { AuthServiceError } from '../enums/auth-service-error';
 import { JwtValidatePayloadInterface } from '../interfaces/jwt-validate-payload.interface';
+import { AuthService } from '../services/auth.service';
+import { AuthController } from './auth.controller';
 
 interface SignInOptions {
   isBadUser?: boolean;
@@ -109,4 +109,5 @@ class AuthModuleTest {
 }
 
 const test = new AuthModuleTest();
+
 test.run();

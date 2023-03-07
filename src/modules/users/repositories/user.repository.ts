@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, ILike, Repository } from 'typeorm';
 import { Page } from '@app/crypto-utils/repositories/page';
+import { LoggerService } from '@app/logger/services/logger.service';
+import { FindOneOptions, ILike, Repository } from 'typeorm';
 
-import { UserEntity } from '../entities/user.entity';
 import { StoreUserCommand } from '../dto/command/store-user.command';
 import { UserListQuery } from '../dto/query/user-list.query';
-import { LoggerService } from '@app/logger/services/logger.service';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class UserRepository {
@@ -78,6 +78,7 @@ export class UserRepository {
         stack: this.findByEmail.name,
         extra: err,
       });
+
       throw new Error(err);
     }
   }
