@@ -1,0 +1,1 @@
+export const SMALLINT_MAX_VALUE = 32767;

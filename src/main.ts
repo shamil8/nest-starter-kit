@@ -7,7 +7,6 @@ import config from './config';
 import swaggerConfig from './config/swagger.config';
 import { AppExceptionsFilter } from './filters/app.exceptions.filter';
 import { ResponseInterceptor } from './filters/app.response.interceptor';
-import { AppValidationPipe } from './filters/app.validation.pipe';
 
 async function main(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -15,10 +14,7 @@ async function main(): Promise<void> {
 
   app.useGlobalFilters(new AppExceptionsFilter(adapter));
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalPipes(
-    new ValidationPipe({ transform: true }),
-    new AppValidationPipe(),
-  );
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.setGlobalPrefix(config.routePrefix);
 
   /** Settings Swagger */
@@ -32,4 +28,6 @@ async function main(): Promise<void> {
   await app.listen(config.appPort);
 }
 
-main();
+main().catch((err: any) => {
+  throw Error(err);
+});

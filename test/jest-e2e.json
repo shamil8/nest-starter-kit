@@ -8,6 +8,6 @@
   },
   "moduleNameMapper": {
     "@app/crypto-utils/(.*)": "<rootDir>/libs/crypto-utils/src/$1",
-    "@app/contracts/(.*)": "<rootDir>/libs/contracts/$1"
+    "@app/logger/(.*)": "<rootDir>/libs/logger/src/$1"
   }
 }

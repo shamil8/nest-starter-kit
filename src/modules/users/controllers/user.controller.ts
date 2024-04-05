@@ -2,49 +2,68 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Query,
-  UsePipes,
-  ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { wrongRequestApiResource } from '@app/crypto-utils/documentation/wrong-request-api-response';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  ApiResponsePaginated,
+  PageResType,
+} from '@app/crypto-utils/decorators/page-response.decorator';
 
+import {
+  ExceptionLocalCode,
+  setApiDesc,
+} from '../../../enums/exception-local-code';
+import { ExceptionMessage } from '../../../enums/exception-message';
+import { JwtAccessGuard } from '../../auth/guards/jwt-access.guard';
 import { StoreUserCommand } from '../dto/command/store-user.command';
 import { UserListQuery } from '../dto/query/user-list.query';
-import { UserDto } from '../dto/resource/user.dto';
+import { UserResource } from '../dto/resource/user.resource';
 import { UserService } from '../services/user.service';
 
 @ApiTags('Users')
-@Controller({
-  path: 'users',
-  // host: '127.0.0.1',
-})
+@Controller({ path: 'users' })
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get all users',
-    type: [UserDto],
-  })
-  @ApiResponse(wrongRequestApiResource)
   @Get()
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async getUsers(@Query() query: UserListQuery): Promise<UserDto[]> {
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'This route can call all users',
+  })
+  @UseGuards(JwtAccessGuard)
+  @ApiBearerAuth()
+  @ApiResponsePaginated(UserResource)
+  async getUsers(@Query() query: UserListQuery): PageResType<UserResource> {
     return this.usersService.getUsers(query);
   }
 
-  @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Create new user',
-    type: [UserDto],
-  })
-  @ApiResponse(wrongRequestApiResource)
   @Post()
-  createUser(@Body() command: StoreUserCommand): Promise<UserDto> {
+  @ApiOperation({
+    summary: 'Create user',
+    description: 'Route for creating user',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Created new user',
+    type: UserResource,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: setApiDesc(
+      ExceptionMessage.EMAIL_EXISTS,
+      ExceptionLocalCode.EMAIL_EXISTS,
+    ),
+  })
+  createUser(@Body() command: StoreUserCommand): Promise<UserResource> {
     return this.usersService.createUser(command);
   }
 }

@@ -1,22 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, MaxLength, MinLength } from 'class-validator';
 
-export class StoreUserCommand {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsEmail()
-  email!: string;
+import { AuthCommand } from '../../../auth/dto/command/auth.command';
 
-  @ApiProperty()
-  @IsNotEmpty()
+export class StoreUserCommand extends AuthCommand {
+  @ApiProperty({ required: false, example: 'Shamil', description: 'User name' })
+  @IsString()
   @MaxLength(128)
-  password!: string;
-
-  @ApiProperty({ example: 'Shamil', description: 'User name' })
-  @MaxLength(128)
+  @MinLength(2)
   firstName?: string;
 
-  @ApiProperty({ example: 'Qurbonov', description: 'User lastname' })
+  @ApiProperty({
+    required: false,
+    example: 'Qurbonov',
+    description: 'User last name',
+  })
+  @IsString()
+  @MinLength(2)
   @MaxLength(128)
   lastName?: string;
 }

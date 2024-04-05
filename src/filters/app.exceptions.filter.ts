@@ -5,7 +5,11 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { HttpExceptionBodyMessage } from '@nestjs/common/interfaces/http/http-exception-body.interface';
 import { HttpAdapterHost } from '@nestjs/core';
+
+import { AppExceptionResource } from '../dto/resource/app-exception.resource';
+import { ExceptionMessage } from '../enums/exception-message';
 
 @Catch()
 export class AppExceptionsFilter implements ExceptionFilter {
@@ -24,18 +28,25 @@ export class AppExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.BAD_REQUEST;
-    const httpResponse =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : exception.message || exception.msg || exception;
+    let httpResponse: { message: HttpExceptionBodyMessage; [key: string]: any };
 
-    const responseBody = {
-      ok: false,
-      statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      message: httpResponse,
-    };
+    if (exception instanceof HttpException) {
+      const response = exception.getResponse();
 
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+      httpResponse =
+        typeof response === 'string'
+          ? { message: response }
+          : { message: ExceptionMessage.INVALID_DATA, ...response };
+    } else {
+      httpResponse = {
+        message: exception.message || exception.msg || String(exception),
+      };
+    }
+
+    httpAdapter.reply(
+      ctx.getResponse(),
+      new AppExceptionResource({ statusCode: httpStatus, ...httpResponse }),
+      httpStatus,
+    );
   }
 }

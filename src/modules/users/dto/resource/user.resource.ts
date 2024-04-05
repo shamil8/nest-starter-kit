@@ -2,20 +2,29 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from '../../entities/user.entity';
 
-export class UserDto {
+export class UserResource {
   @ApiProperty({
-    example: '00000000-0000-0000-0000-000000000000',
+    required: true,
+    example: 'EKFKV2WCDJK8',
     description: 'User ID',
   })
   id!: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: true,
+    example: 'example@test.com',
+    description: 'The email of user',
+  })
   email!: string;
 
-  @ApiProperty({ example: 'Shamil', description: 'User name' })
+  @ApiProperty({ required: false, example: 'Shamil', description: 'User name' })
   firstName?: string;
 
-  @ApiProperty({ example: 'Qurbonov', description: 'User lastname' })
+  @ApiProperty({
+    required: false,
+    example: 'Qurbonov',
+    description: 'User last name',
+  })
   lastName?: string;
 
   constructor(entity: UserEntity) {

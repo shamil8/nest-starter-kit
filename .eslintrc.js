@@ -22,41 +22,45 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-inferrable-types': 'warn',
-    "@typescript-eslint/prefer-readonly": "warn",
+    '@typescript-eslint/prefer-readonly': 'warn',
     '@typescript-eslint/quotes': [
       'warn',
       'single',
       {
-        'allowTemplateLiterals': true
-      }
+        allowTemplateLiterals: true,
+      },
     ],
-    "prefer-const": "warn",
-    "padding-line-between-statements": [
-      "warn",
-      { "blankLine": "always", "prev": "*", "next": "return" },
-      { "blankLine": "always", "prev": "*", "next": "if" },
-      { "blankLine": "always", "prev": "if", "next": "*" },
-      { "blankLine": "always", "prev": "*", "next": "throw" },
-      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
-      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"] }
+    'prefer-const': 'warn',
+    'padding-line-between-statements': [
+      'warn',
+      { blankLine: 'always', prev: '*', next: 'return' },
+      { blankLine: 'always', prev: '*', next: 'if' },
+      { blankLine: 'always', prev: 'if', next: '*' },
+      { blankLine: 'always', prev: '*', next: 'throw' },
+      { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+      {
+        blankLine: 'any',
+        prev: ['const', 'let', 'var'],
+        next: ['const', 'let', 'var'],
+      },
     ],
     'simple-import-sort/exports': 'error',
     'simple-import-sort/imports': [
       'error',
       {
-        'groups': [
-          // Packages `nest` related packages come first.
+        groups: [
+          // Node.js builtins. You could specify '^node:' if you prefer.
+          ['^\\u0000'],
+          // External packages.
           ['^@nestjs', '^@?\\w'],
           // Internal packages.
           ['^(@|app)(/.*|$)'],
-          // Side effect imports.
-          ['^\\u0000'],
           // Parent imports. Put `..` last.
-          ['^\\\\.\\\\.(?!/?$)", "^\\\\.\\\\./?$'],
+          ['^\\..(?!/?$)', '^\\.\\./?$'],
           // Other relative imports. Put same-folder imports and `.` last.
-          ['^\\\\./(?=.*/)(?!/?$)", "^\\\\.(?!/?$)", "^\\\\./?$'],
-        ]
-      }
+          ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+        ],
+      },
     ],
   },
 };

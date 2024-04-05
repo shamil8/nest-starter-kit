@@ -6,7 +6,7 @@ import { UserRole } from '../enums/user-role';
 
 @Entity({ schema: 'users', name: 'users' })
 export class UserEntity extends BaseEntity {
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
   @Column({ nullable: true })

@@ -1,29 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
-export class UserListQuery {
+import { PaginationParamsQuery } from '../../../../dto/query/pagination-params.query';
+
+export class UserListQuery extends PaginationParamsQuery {
   @ApiProperty({
     required: false,
   })
   @IsOptional()
+  @IsString()
   text?: string;
-
-  @ApiProperty({
-    required: false,
-    example: 1,
-  })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  page = 1;
-
-  @ApiProperty({
-    example: 25,
-    required: false,
-  })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  take = 15;
 }

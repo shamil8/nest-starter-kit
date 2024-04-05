@@ -12,13 +12,16 @@ export class AuthConfig {
     this.jwt = {
       access: {
         secret: this.configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
-        lifetime: this.configService.get<number>('JWT_ACCESS_LIFETIME', 86400),
+        lifetime: this.configService.get<number | string>(
+          'JWT_ACCESS_LIFETIME',
+          '1h',
+        ),
       },
       refresh: {
         secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
-        lifetime: this.configService.get<number>(
+        lifetime: this.configService.get<number | string>(
           'JWT_REFRESH_LIFETIME',
-          2592000,
+          '1w',
         ),
       },
     };

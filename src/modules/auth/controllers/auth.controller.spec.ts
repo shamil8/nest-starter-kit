@@ -5,9 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { getUUID } from '@app/crypto-utils/functions/export-settings';
 import { DatabaseModule } from '@app/database/database.module';
 
+import { ExceptionMessage } from '../../../enums/exception-message';
 import { UserRepository } from '../../users/repositories/user.repository';
 import { AuthCommand } from '../dto/command/auth.command';
-import { AuthServiceError } from '../enums/auth-service-error';
 import { JwtValidatePayloadInterface } from '../interfaces/jwt-validate-payload.interface';
 import { AuthService } from '../services/auth.service';
 import { AuthController } from './auth.controller';
@@ -100,7 +100,7 @@ class AuthModuleTest {
         }
 
         if (options.isBadUser) {
-          expect(err.getResponse()).toBe(AuthServiceError.WRONG_PASSWORD);
+          expect(err.getResponse()).toBe(ExceptionMessage.WRONG_PASSWORD);
           expect(err.getStatus()).toBe(HttpStatus.FORBIDDEN);
         }
       }

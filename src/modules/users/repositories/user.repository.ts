@@ -1,89 +1,76 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FindAndCountType } from '@app/crypto-utils/interfaces/find-and-count.type';
 import { Page } from '@app/crypto-utils/repositories/page';
 import { LoggerService } from '@app/logger/services/logger.service';
-import { FindOneOptions, ILike, Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 
+import { ExceptionLocalCode } from '../../../enums/exception-local-code';
+import { ExceptionMessage } from '../../../enums/exception-message';
+import { AppHttpException } from '../../../filters/app-http.exception';
 import { StoreUserCommand } from '../dto/command/store-user.command';
 import { UserListQuery } from '../dto/query/user-list.query';
 import { UserEntity } from '../entities/user.entity';
+import { UserRole } from '../enums/user-role';
 
 @Injectable()
 export class UserRepository {
   constructor(
+    private readonly logger: LoggerService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    private readonly logger: LoggerService,
   ) {}
 
-  async list(query: UserListQuery): Promise<UserEntity[]> {
+  async findUsers(query: UserListQuery): FindAndCountType<UserEntity> {
     const page = new Page(query.page, query.take);
 
-    return await this.userRepository.find({
-      where: {
-        firstName: query.text && ILike(`%${query.text}%`),
-      },
-      take: page.limit || undefined,
-      skip: page.offset,
-    });
+    return this.userRepository
+      .createQueryBuilder('users')
+      .AndSearch(
+        ['users.firstName', 'users.lastName', 'users.email'],
+        query.text,
+      )
+      .orderBy('users.firstName', 'ASC')
+      .limit(page.limit)
+      .offset(page.offset)
+      .getManyAndCount();
   }
 
-  // TODO:: Improve findById and byEmail!!!
-  async findUserById(id: string): Promise<UserEntity> {
-    try {
-      const user = await this.userRepository.findOne({ where: { id } });
-
-      if (!user) {
-        this.logger.error('User not found', {
-          stack: this.findUserById.name,
-          params: { id },
-        });
-
-        throw new NotFoundException('User not found');
-      }
-
-      return user;
-    } catch (err: any) {
-      this.logger.error(err, {
-        stack: this.findUserById.name,
-        extra: err,
-      });
-
-      throw new Error(err);
-    }
-  }
-
-  // TODO:: Improve findById and byEmail!!!
-  async findByEmail(
-    email: string,
+  async findByColumn<TColumn extends keyof UserEntity>(
+    column: TColumn,
+    value: UserEntity[TColumn],
     options?: FindOneOptions<UserEntity>,
   ): Promise<UserEntity> {
-    try {
-      const user = await this.userRepository.findOne({
-        ...options,
-        where: { email },
-      });
+    const user = await this.userRepository.findOne({
+      ...options,
+      where: { [column]: value },
+    });
 
-      if (!user) {
-        this.logger.error('User not found', {
-          stack: this.findByEmail.name,
-        });
-
-        throw new NotFoundException('User not found');
-      }
-
+    if (user) {
       return user;
-    } catch (err: any) {
-      this.logger.error(err, {
-        stack: this.findByEmail.name,
-        extra: err,
-      });
-
-      throw new Error(err);
     }
+
+    this.logger.debug(ExceptionMessage.USER_NOT_FOUND, {
+      stack: `${this.findByColumn.name} with column: ${column}`,
+      params: { [column]: value },
+    });
+
+    throw new AppHttpException(
+      ExceptionMessage.USER_NOT_FOUND,
+      HttpStatus.NOT_FOUND,
+      ExceptionLocalCode.USER_NOT_FOUND,
+    );
   }
 
-  async storeUser(userCommand: StoreUserCommand): Promise<UserEntity> {
-    return this.userRepository.save(userCommand);
+  async storeUser(
+    command: StoreUserCommand,
+    role = UserRole.USER_ROLE,
+  ): Promise<UserEntity> {
+    const user = this.userRepository.create({
+      ...command,
+      role,
+    });
+
+    return this.userRepository.save(user);
   }
 }

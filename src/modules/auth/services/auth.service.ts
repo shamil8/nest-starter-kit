@@ -1,13 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoggerService } from '@app/logger/services/logger.service';
 
+import { ExceptionLocalCode } from '../../../enums/exception-local-code';
+import { ExceptionMessage } from '../../../enums/exception-message';
+import { AppHttpException } from '../../../filters/app-http.exception';
 import { UserService } from '../../users/services/user.service';
 import { AuthConfig } from '../config/auth.config';
 import { AuthCommand } from '../dto/command/auth.command';
-import { AuthServiceError } from '../enums/auth-service-error';
-import { JwtResponseInterface } from '../interfaces/jwt-response.interface';
+import { JwtResponseResource } from '../dto/resource/jwt-response.resource';
 import { JwtValidatePayloadInterface } from '../interfaces/jwt-validate-payload.interface';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -19,7 +22,7 @@ export class AuthService {
 
   private createTokens(
     payload: JwtValidatePayloadInterface,
-  ): JwtResponseInterface {
+  ): JwtResponseResource {
     const accessToken = this.jwtService.sign(payload, {
       secret: this.authConfig.jwt.access.secret,
       expiresIn: this.authConfig.jwt.access.lifetime,
@@ -30,20 +33,19 @@ export class AuthService {
       expiresIn: this.authConfig.jwt.refresh.lifetime,
     });
 
-    return { accessToken, refreshToken };
+    return new JwtResponseResource(accessToken, refreshToken);
   }
 
-  async login(data: AuthCommand): Promise<JwtResponseInterface> {
-    const user = await this.userService.findByEmail(data.email, {
+  async login(command: AuthCommand): Promise<JwtResponseResource> {
+    const user = await this.userService.findByEmail(command.email, {
       select: ['id', 'password'],
     });
 
-    if (!user || !user.passwordCompare(data.password)) {
-      this.logger.error(AuthServiceError.WRONG_PASSWORD);
-
-      throw new HttpException(
-        AuthServiceError.WRONG_PASSWORD,
+    if (!user || !user.passwordCompare(command.password)) {
+      throw new AppHttpException(
+        ExceptionMessage.WRONG_PASSWORD,
         HttpStatus.FORBIDDEN,
+        ExceptionLocalCode.WRONG_PASSWORD,
       );
     }
 
