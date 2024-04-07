@@ -1,7 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindAndCountType } from '@app/crypto-utils/interfaces/find-and-count.type';
-import { Page } from '@app/crypto-utils/repositories/page';
 import { LoggerService } from '@app/logger/services/logger.service';
 import { FindOneOptions, Repository } from 'typeorm';
 
@@ -22,8 +21,6 @@ export class UserRepository {
   ) {}
 
   async findUsers(query: UserListQuery): FindAndCountType<UserEntity> {
-    const page = new Page(query.page, query.take);
-
     return this.userRepository
       .createQueryBuilder('users')
       .AndSearch(
@@ -31,8 +28,8 @@ export class UserRepository {
         query.text,
       )
       .orderBy('users.firstName', 'ASC')
-      .limit(page.limit)
-      .offset(page.offset)
+      .skip(query.getSkip())
+      .take(query.take)
       .getManyAndCount();
   }
 

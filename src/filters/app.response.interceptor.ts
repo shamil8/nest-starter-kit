@@ -10,7 +10,14 @@ import { map } from 'rxjs/operators';
 
 export const getResSwaggerFilter = (result: SchemaObject): SchemaObject => ({
   type: 'object',
-  properties: { ok: { type: 'boolean' }, result },
+  properties: {
+    ok: {
+      type: 'boolean',
+      description: 'Indicates whether the request was successful or not',
+      example: true,
+    },
+    result,
+  },
 });
 
 @Injectable()

@@ -32,4 +32,8 @@ export class PaginationParamsQuery {
   @Min(0)
   @Max(SMALLINT_MAX_VALUE)
   take = PAGE_SIZE;
+
+  getSkip(): number {
+    return (this.page - 1) * this.take;
+  }
 }
