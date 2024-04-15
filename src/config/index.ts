@@ -13,6 +13,7 @@ export default {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
+  maxBodySize: process.env.MAX_BODY_SIZE || '50mb',
 
   /** Swagger documentation prefix */
   swaggerPrefix: process.env.SWAGGER_PREFIX,

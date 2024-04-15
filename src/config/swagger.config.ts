@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as packageJson from '../../package.json';
 import {
   AppExceptionResource,
-  getExceptionContent,
+  getAppException,
 } from '../dto/resource/app-exception.resource';
 import { ExceptionLocalCode } from '../enums/exception-local-code';
 import { ExceptionMessage } from '../enums/exception-message';
@@ -39,54 +39,51 @@ export default (app: INestApplication): void => {
   for (const [, pathValue] of Object.entries(document.paths)) {
     for (const [, methodValue] of Object.entries(pathValue)) {
       const parameters = methodValue.parameters;
+      const statusBadReq = HttpStatus.BAD_REQUEST;
 
       if (
         ((parameters && parameters.length) || methodValue.requestBody) &&
-        !methodValue.responses.hasOwnProperty(HttpStatus.BAD_REQUEST)
+        !methodValue.responses.hasOwnProperty(statusBadReq)
       ) {
-        methodValue.responses[HttpStatus.BAD_REQUEST] = {
+        methodValue.responses[statusBadReq] = getAppException({
           description: ExceptionMessage.INVALID_DATA,
-          content: getExceptionContent({
-            statusCode: HttpStatus.BAD_REQUEST,
-            message: ['year must be a number', 'email must be an email'],
-          }),
-        };
+          statusCode: statusBadReq,
+          message: ['year must be a number', 'email must be an email'],
+        });
       }
 
-      for (const code of [
+      for (const statusCode of [
         HttpStatus.NOT_FOUND,
         HttpStatus.CONFLICT,
         HttpStatus.FORBIDDEN,
       ]) {
         if (
-          methodValue.responses.hasOwnProperty(code) &&
-          !methodValue.responses[code].content
+          methodValue.responses.hasOwnProperty(statusCode) &&
+          !methodValue.responses[statusCode].content
         ) {
-          const [message, localCode] =
-            methodValue.responses[code].description.split('__');
+          const [description, localCode] =
+            methodValue.responses[statusCode].description.split('__');
 
-          methodValue.responses[code].description = message;
-          methodValue.responses[code].content = getExceptionContent({
-            statusCode: code,
-            message,
+          methodValue.responses[statusCode] = getAppException({
+            statusCode,
+            description,
             localCode: isNaN(localCode) ? undefined : Number(localCode),
           });
         }
       }
 
+      const statusUnAuth = HttpStatus.UNAUTHORIZED;
+
       if (
         methodValue.security &&
         methodValue.security.length &&
-        !methodValue.responses.hasOwnProperty(HttpStatus.UNAUTHORIZED)
+        !methodValue.responses.hasOwnProperty(statusUnAuth)
       ) {
-        methodValue.responses[HttpStatus.UNAUTHORIZED] = {
+        methodValue.responses[statusUnAuth] = getAppException({
           description: ExceptionMessage.AUTH_WRONG_TOKEN,
-          content: getExceptionContent({
-            statusCode: HttpStatus.UNAUTHORIZED,
-            message: ExceptionMessage.AUTH_WRONG_TOKEN,
-            localCode: ExceptionLocalCode.AUTH_WRONG_TOKEN,
-          }),
-        };
+          statusCode: statusUnAuth,
+          localCode: ExceptionLocalCode.AUTH_WRONG_TOKEN,
+        });
       }
 
       /** Add additional info for CREATED AND OK statuses (/srs/filters)*/

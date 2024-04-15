@@ -1,29 +1,45 @@
 import { HttpStatus } from '@nestjs/common';
-import { HttpExceptionBodyMessage } from '@nestjs/common/interfaces/http/http-exception-body.interface';
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
-import { ContentObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { ResponseObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ExceptionLocalCode } from '../../enums/exception-local-code';
-import { ExceptionMessage } from '../../enums/exception-message';
+import {
+  ExceptionMessage,
+  ExceptionMsgType,
+} from '../../enums/exception-message';
 
-interface AppExceptionInterface {
+interface BaseExceptionInterface {
   statusCode: HttpStatus;
-  message: HttpExceptionBodyMessage;
+  message?: ExceptionMsgType;
   localCode?: ExceptionLocalCode;
 }
 
-export const getExceptionContent = (
+interface ContextExceptionInterface extends BaseExceptionInterface {
+  message: ExceptionMsgType;
+}
+
+interface AppExceptionInterface extends BaseExceptionInterface {
+  description: ExceptionMessage;
+}
+
+export const getAppException = (
   data: AppExceptionInterface,
-): ContentObject => ({
-  'application/json': {
-    schema: { $ref: getSchemaPath(AppExceptionResource) },
-    examples: {
-      'app-exception-resource': {
-        summary: `Error ${Object.keys(HttpStatus).find(
-          (key) =>
-            HttpStatus[key as keyof typeof HttpStatus] === data.statusCode,
-        )} example`,
-        value: new AppExceptionResource(data),
+): ResponseObject => ({
+  description: data.description,
+  content: {
+    'application/json': {
+      schema: { $ref: getSchemaPath(AppExceptionResource) },
+      examples: {
+        'app-exception-resource': {
+          summary: `Error ${Object.keys(HttpStatus).find(
+            (key) =>
+              HttpStatus[key as keyof typeof HttpStatus] === data.statusCode,
+          )} example`,
+          value: new AppExceptionResource({
+            ...data,
+            message: data.message || data.description,
+          }),
+        },
       },
     },
   },
@@ -64,7 +80,7 @@ export class AppExceptionResource {
       },
     ],
   })
-  message!: HttpExceptionBodyMessage | ExceptionMessage;
+  message!: ExceptionMsgType;
 
   @ApiProperty({
     example: ExceptionLocalCode.USER_NOT_FOUND,
@@ -74,7 +90,7 @@ export class AppExceptionResource {
   })
   localCode?: ExceptionLocalCode;
 
-  constructor(body: AppExceptionInterface) {
+  constructor(body: ContextExceptionInterface) {
     this.ok = false;
     this.statusCode = body.statusCode;
     this.timestamp = new Date();

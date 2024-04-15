@@ -1,3 +1,5 @@
+export type ExceptionMsgType = ExceptionMessage | string[];
+
 export enum ExceptionMessage {
   // common
   ACCESS_DENIED = 'Access denied',

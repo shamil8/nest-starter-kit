@@ -5,11 +5,10 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { HttpExceptionBodyMessage } from '@nestjs/common/interfaces/http/http-exception-body.interface';
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { AppExceptionResource } from '../dto/resource/app-exception.resource';
-import { ExceptionMessage } from '../enums/exception-message';
+import { ExceptionMessage, ExceptionMsgType } from '../enums/exception-message';
 
 @Catch()
 export class AppExceptionsFilter implements ExceptionFilter {
@@ -28,14 +27,14 @@ export class AppExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.BAD_REQUEST;
-    let httpResponse: { message: HttpExceptionBodyMessage; [key: string]: any };
+    let httpResponse: { message: ExceptionMsgType; [key: string]: any };
 
     if (exception instanceof HttpException) {
       const response = exception.getResponse();
 
       httpResponse =
         typeof response === 'string'
-          ? { message: response }
+          ? { message: response as ExceptionMsgType }
           : { message: ExceptionMessage.INVALID_DATA, ...response };
     } else {
       httpResponse = {
