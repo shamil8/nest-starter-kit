@@ -22,7 +22,9 @@ interface AppExceptionInterface extends BaseExceptionInterface {
   description: ExceptionMessage;
 }
 
-export const ApiAppException = (data: AppExceptionInterface): MethodDecorator =>
+export const ApiAppException = (
+  data: AppExceptionInterface,
+): MethodDecorator & ClassDecorator =>
   ApiResponse({ status: data.statusCode, ...getAppException(data) });
 
 export const getAppException = (
@@ -58,7 +60,8 @@ export class AppExceptionResource {
   @ApiProperty({
     example: HttpStatus.BAD_REQUEST,
     description: 'Request status code',
-    enum: HttpStatus,
+    enum: Object.values(HttpStatus).filter((val) => typeof val === 'number'),
+    type: Number,
   })
   statusCode!: HttpStatus;
 
@@ -88,8 +91,11 @@ export class AppExceptionResource {
   @ApiProperty({
     example: ExceptionLocalCode.USER_NOT_FOUND,
     description: 'Localized error code',
-    enum: ExceptionLocalCode,
+    enum: Object.values(ExceptionLocalCode).filter(
+      (val) => typeof val === 'number',
+    ),
     required: false,
+    type: Number,
   })
   localCode?: ExceptionLocalCode;
 
