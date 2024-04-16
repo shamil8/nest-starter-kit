@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { ResponseObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ExceptionLocalCode } from '../../enums/exception-local-code';
@@ -21,6 +21,9 @@ interface ContextExceptionInterface extends BaseExceptionInterface {
 interface AppExceptionInterface extends BaseExceptionInterface {
   description: ExceptionMessage;
 }
+
+export const ApiAppException = (data: AppExceptionInterface): MethodDecorator =>
+  ApiResponse({ status: data.statusCode, ...getAppException(data) });
 
 export const getAppException = (
   data: AppExceptionInterface,

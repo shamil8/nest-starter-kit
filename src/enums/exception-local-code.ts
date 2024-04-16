@@ -1,10 +1,3 @@
-import { ExceptionMessage } from './exception-message';
-
-export const setApiDesc = (
-  desc: ExceptionMessage,
-  code: ExceptionLocalCode,
-): string => `${desc}__${code}`;
-
 export enum ExceptionLocalCode {
   // common
   GENERIC_ERROR = 10000,

@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import {
@@ -18,10 +18,8 @@ import {
   PageResType,
 } from '@app/crypto-utils/decorators/page-response.decorator';
 
-import {
-  ExceptionLocalCode,
-  setApiDesc,
-} from '../../../enums/exception-local-code';
+import { ApiAppException } from '../../../dto/resource/app-exception.resource';
+import { ExceptionLocalCode } from '../../../enums/exception-local-code';
 import { ExceptionMessage } from '../../../enums/exception-message';
 import { JwtAccessGuard } from '../../auth/guards/jwt-access.guard';
 import { StoreUserCommand } from '../dto/command/store-user.command';
@@ -51,17 +49,14 @@ export class UserController {
     summary: 'Create user',
     description: 'Route for creating user',
   })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Created new user',
+  @ApiOkResponse({
     type: UserResource,
+    description: 'Created new user',
   })
-  @ApiResponse({
-    status: HttpStatus.CONFLICT,
-    description: setApiDesc(
-      ExceptionMessage.EMAIL_EXISTS,
-      ExceptionLocalCode.EMAIL_EXISTS,
-    ),
+  @ApiAppException({
+    statusCode: HttpStatus.CONFLICT,
+    description: ExceptionMessage.EMAIL_EXISTS,
+    localCode: ExceptionLocalCode.EMAIL_EXISTS,
   })
   createUser(@Body() command: StoreUserCommand): Promise<UserResource> {
     return this.usersService.createUser(command);

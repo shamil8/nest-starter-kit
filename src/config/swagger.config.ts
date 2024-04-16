@@ -37,7 +37,7 @@ export default (app: INestApplication): void => {
   });
 
   for (const [, pathValue] of Object.entries(document.paths)) {
-    for (const [, methodValue] of Object.entries(pathValue)) {
+    for (const [method, methodValue] of Object.entries(pathValue)) {
       const parameters = methodValue.parameters;
       const statusBadReq = HttpStatus.BAD_REQUEST;
 
@@ -50,26 +50,6 @@ export default (app: INestApplication): void => {
           statusCode: statusBadReq,
           message: ['year must be a number', 'email must be an email'],
         });
-      }
-
-      for (const statusCode of [
-        HttpStatus.NOT_FOUND,
-        HttpStatus.CONFLICT,
-        HttpStatus.FORBIDDEN,
-      ]) {
-        if (
-          methodValue.responses.hasOwnProperty(statusCode) &&
-          !methodValue.responses[statusCode].content
-        ) {
-          const [description, localCode] =
-            methodValue.responses[statusCode].description.split('__');
-
-          methodValue.responses[statusCode] = getAppException({
-            statusCode,
-            description,
-            localCode: isNaN(localCode) ? undefined : Number(localCode),
-          });
-        }
       }
 
       const statusUnAuth = HttpStatus.UNAUTHORIZED;
@@ -86,17 +66,25 @@ export default (app: INestApplication): void => {
         });
       }
 
-      /** Add additional info for CREATED AND OK statuses (/srs/filters)*/
-      const isOk = methodValue.responses.hasOwnProperty(HttpStatus.OK);
+      /** Add additional info for OK status (/srs/filters) */
+      const statusOk = HttpStatus.OK;
 
-      if (isOk || methodValue.responses.hasOwnProperty(HttpStatus.CREATED)) {
-        const resOk =
-          methodValue.responses[isOk ? HttpStatus.OK : HttpStatus.CREATED];
+      if (methodValue.responses.hasOwnProperty(statusOk)) {
+        const resOk = methodValue.responses[statusOk];
 
-        if (resOk.content && resOk.content['application/json']) {
-          resOk.content['application/json'].schema = getResSwaggerFilter(
-            resOk.content['application/json'].schema,
-          );
+        if (!resOk.content || !resOk.content['application/json']) {
+          continue;
+        }
+
+        resOk.content['application/json'].schema = getResSwaggerFilter(
+          resOk.content['application/json'].schema,
+        );
+
+        /** Change OK status to CREATED if POST method */
+        if (method === 'post') {
+          methodValue.responses[HttpStatus.CREATED] = resOk;
+
+          delete methodValue.responses[statusOk];
         }
       }
     }
