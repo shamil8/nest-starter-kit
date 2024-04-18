@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
@@ -9,8 +9,10 @@ import swaggerConfig from './config/swagger.config';
 import { AppExceptionsFilter } from './filters/app.exceptions.filter';
 import { ResponseInterceptor } from './filters/app.response.interceptor';
 
+let app: INestApplication | null = null;
+
 async function main(): Promise<void> {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app = await NestFactory.create(AppModule, { bufferLogs: true });
   const adapter = app.get(HttpAdapterHost);
 
   app.useGlobalFilters(new AppExceptionsFilter(adapter));
@@ -31,6 +33,13 @@ async function main(): Promise<void> {
   await app.listen(config.appPort);
 }
 
-main().catch((err: any) => {
-  throw Error(err);
+main().catch(async (err: any) => {
+  console.error('MainNest:', err);
+
+  if (app) {
+    await app.close();
+  }
+
+  // Exit the process with a failure code
+  process.exit(1);
 });
