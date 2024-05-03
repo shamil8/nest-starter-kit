@@ -12,7 +12,7 @@ export enum ExceptionLocalCode {
   MODULE_LOAD_FAILED,
   UNKNOWN_FILTER_FIELD,
 
-  // user
+  // user module
   USER_STORE_FAILED = 10500,
   USER_SAVE_FAILED,
   USER_NAME_EXISTS,
@@ -25,7 +25,7 @@ export enum ExceptionLocalCode {
   NEW_PASSWORD_CONFIRMATION_FAILED,
   NO_PERMISSION,
 
-  // auth
+  // auth module
   AUTH_USER_VALIDATION_FAILED = 10600,
   AUTH_WRONG_TOKEN,
   AUTH_TOKEN_EXPIRED,
@@ -37,14 +37,18 @@ export enum ExceptionLocalCode {
   AUTH_CODE_CHECK_FAIL,
   AUTH_EMAIL_CODE_NOT_SENT,
 
+  // Auth2 factor (Auth module)
+  AUTH_2FA_ENABLE = 10700,
+  AUTH_2FA_DISABLE,
+  AUTH_2FA_GET_SECRET,
+  AUTH_2FA_MISSING_2FA_CODE_FIELD,
+  AUTH_2FA_INVALID_2FA_CODE,
+
   // notifications
   TELEGRAM_NOT_LINKED = 10900,
   NOTIFICATION_SEND_FAILED,
   NOTIFICATION_NOT_EXIST,
   NOTIFICATION_ALREADY_READ,
-
-  // referral program
-  REFERRAL_PROGRAM_DISABLED = 11000,
 
   // file
   FILE_STORE_FAILED = 11300,
@@ -52,10 +56,6 @@ export enum ExceptionLocalCode {
   // codes
   CODE_NOT_EXISTS = 12500,
 
-  // Auth2 factor
-  AUTH_2FA_ENABLE = 12600,
-  AUTH_2FA_DISABLE,
-  AUTH_2FA_GET_SECRET,
-  AUTH_2FA_MISSING_2FA_CODE_FIELD,
-  AUTH_2FA_INVALID_2FA_CODE,
+  // system module
+  COUNTRY_NOT_FOUND = 12700,
 }

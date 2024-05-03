@@ -4,6 +4,7 @@ import { LoggerModule } from '@app/logger/logger.module';
 import { RabbitModule } from '@app/rabbit/rabbit.module';
 
 import { AuthModule } from './modules/auth/auth.module';
+import { SystemModule } from './modules/system/system.module';
 import { UserModule } from './modules/users/user.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { UserModule } from './modules/users/user.module';
     RabbitModule,
 
     /** Application modules */
+    SystemModule,
     AuthModule,
     UserModule,
   ],

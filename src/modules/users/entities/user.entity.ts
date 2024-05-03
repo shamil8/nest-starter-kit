@@ -1,7 +1,8 @@
 import { BaseEntity } from '@app/database/entities/base.entity';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne } from 'typeorm';
 
+import { CountryEntity } from '../../system/entities/country.entity';
 import { UserRole } from '../enums/user-role';
 
 @Entity({ schema: 'users', name: 'users' })
@@ -23,6 +24,9 @@ export class UserEntity extends BaseEntity {
   })
   password!: string;
 
+  @Column({ nullable: true })
+  countryId?: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   private encryptPassword(): void {
@@ -38,4 +42,7 @@ export class UserEntity extends BaseEntity {
   passwordCompare(password: string): boolean {
     return compareSync(password, this.password.replace(/^\$2y/, '$2a'));
   }
+
+  @ManyToOne(() => CountryEntity, (country) => country.users)
+  country?: CountryEntity;
 }
