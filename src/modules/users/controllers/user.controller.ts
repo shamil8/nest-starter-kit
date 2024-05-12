@@ -13,14 +13,17 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiResponsePaginated,
   PageResType,
 } from '@app/crypto-utils/decorators/page-response.decorator';
 
+import { authRateLimitOptions } from '../../../constants/rate-limit';
 import { ApiAppException } from '../../../dto/resource/app-exception.resource';
 import { ExceptionLocalCode } from '../../../enums/exception-local-code';
 import { ExceptionMessage } from '../../../enums/exception-message';
+import { CustomThrottlerGuard } from '../../auth/guards/custom-throttel.guard';
 import { JwtAccessGuard } from '../../auth/guards/jwt-access.guard';
 import { StoreUserCommand } from '../dto/command/store-user.command';
 import { UserListQuery } from '../dto/query/user-list.query';
@@ -49,6 +52,8 @@ export class UserController {
     summary: 'Create user',
     description: 'Route for creating user',
   })
+  @UseGuards(CustomThrottlerGuard)
+  @Throttle({ default: authRateLimitOptions })
   @ApiOkResponse({
     type: UserResource,
     description: 'Created new user',

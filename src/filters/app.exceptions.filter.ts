@@ -6,8 +6,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { ThrottlerException } from '@nestjs/throttler';
 
 import { AppExceptionResource } from '../dto/resource/app-exception.resource';
+import { ExceptionLocalCode } from '../enums/exception-local-code';
 import { ExceptionMessage, ExceptionMsgType } from '../enums/exception-message';
 
 @Catch()
@@ -29,7 +31,12 @@ export class AppExceptionsFilter implements ExceptionFilter {
         : HttpStatus.BAD_REQUEST;
     let httpResponse: { message: ExceptionMsgType; [key: string]: any };
 
-    if (exception instanceof HttpException) {
+    if (exception instanceof ThrottlerException) {
+      httpResponse = {
+        message: ExceptionMessage.TOO_MANY_REQUESTS,
+        localCode: ExceptionLocalCode.TOO_MANY_REQUESTS,
+      };
+    } else if (exception instanceof HttpException) {
       const response = exception.getResponse();
 
       httpResponse =

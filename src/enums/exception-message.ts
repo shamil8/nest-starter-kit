@@ -6,6 +6,7 @@ export enum ExceptionMessage {
   INVALID_DATA = 'Invalid input data',
   TO_MANY_ATTEMPTS = 'Too many attempts',
   REDIS_CLIENT_CONNECTION_FAILED = 'Redis client connection failed',
+  TOO_MANY_REQUESTS = 'Too Many Requests',
 
   // user
   USER_NOT_FOUND = 'User not found',

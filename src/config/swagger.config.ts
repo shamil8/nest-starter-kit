@@ -66,6 +66,13 @@ export default (app: INestApplication): void => {
         });
       }
 
+      /** Global error Rate limit (Too many requests) */
+      methodValue.responses[HttpStatus.TOO_MANY_REQUESTS] = getAppException({
+        description: ExceptionMessage.TOO_MANY_REQUESTS,
+        statusCode: HttpStatus.TOO_MANY_REQUESTS,
+        localCode: ExceptionLocalCode.TOO_MANY_REQUESTS,
+      });
+
       /** Add additional info for OK status (/srs/filters) */
       const statusOk = HttpStatus.OK;
 
