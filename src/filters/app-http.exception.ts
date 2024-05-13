@@ -8,7 +8,8 @@ export class AppHttpException extends HttpException {
     message: ExceptionMessage,
     statusCode: HttpStatus,
     localCode?: ExceptionLocalCode,
+    args?: object,
   ) {
-    super({ message, localCode }, statusCode);
+    super({ message, localCode, args }, statusCode);
   }
 }

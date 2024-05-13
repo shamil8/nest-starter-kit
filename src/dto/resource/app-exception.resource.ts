@@ -12,6 +12,7 @@ interface BaseExceptionInterface {
   statusCode: HttpStatus;
   message?: ExceptionMsgType;
   localCode?: ExceptionLocalCode;
+  args?: object;
 }
 
 interface ContextExceptionInterface extends BaseExceptionInterface {
@@ -99,11 +100,23 @@ export class AppExceptionResource {
   })
   localCode?: ExceptionLocalCode;
 
+  @ApiProperty({
+    example: {
+      key1: 'value1',
+      key2: 'value2',
+    },
+    description: 'Optional request arguments',
+    required: false,
+    type: Object,
+  })
+  args?: object;
+
   constructor(body: ContextExceptionInterface) {
     this.ok = false;
     this.statusCode = body.statusCode;
     this.timestamp = new Date();
     this.message = body.message;
     this.localCode = body.localCode;
+    this.args = body.args;
   }
 }

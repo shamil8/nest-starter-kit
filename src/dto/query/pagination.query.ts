@@ -2,10 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
-import { PAGE_SIZE } from '../../constants/page-size';
-import { SMALLINT_MAX_VALUE } from '../../constants/smallint-max-value';
+import { PAGE_SIZE, SMALLINT_MAX_VALUE } from '../../constants/global';
 
-export class PaginationParamsQuery {
+export class PaginationQuery {
   @ApiProperty({
     required: false,
     default: 1,
