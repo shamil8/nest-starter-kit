@@ -4,14 +4,14 @@ The repository provides examples of the main toolkit used to write a basic servi
 
 ### Required
 
-1. NodeJS v20
-2. Postgres 15.3
-3. RabbitMQ 3.11.3
-4. Redis 7.2
+1. NodeJS v20+
+2. Postgres 15.3+
+3. RabbitMQ 3.11.3+
+4. Redis 7.2+
 
 ### Service start:
 
-1. Create .env file from env.local
+1. Create `.env` file from `env.local`
 2. Install node-modules
 ```
 yarn install
@@ -134,14 +134,15 @@ services - Module services, Example: wallet.service
 
 ### Server responses
 
-Success:
+**Success response structure:**
 ```
 {
   "ok": true,
-  "result": {result}
+  "result": {result - string, number, bool or Resource DTO}
 }
 ```
 
+Success response example:
 ```
 {
   "ok": true,
@@ -154,21 +155,25 @@ Success:
 }
 ```
 
-Error:
+**Error response structure:**
 ```
 {
   "ok": false,
-  "statusCode": {Status code},
+  "statusCode": {HttpStatus},
   "timestamp": {Timestamp},
-  "message": {Error message}
+  "message": {ExceptionMessage},
+  "localCode": {ExceptionLocalCode},
+  "args": {any object}
 }
 ```
 
+Error response example:
 ```
 {
   "ok": false,
-  "statusCode": 403,
-  "timestamp": "2022-05-24T11:36:58.434Z",
-  "message": "Wrong password"
+  "statusCode": 429,
+  "timestamp": "2024-05-24T11:36:58.434Z",
+  "message": "Too Many Requests",
+  "localCode": 10001,
 }
 ```
