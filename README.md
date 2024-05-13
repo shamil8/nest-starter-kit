@@ -49,7 +49,7 @@ docker run --name app-backend -d -p 5001:5000 app-backend:latest --env-file=.env
 
 ### Project structure
 <p align="center">
-  <img src="https://github.com/shamil8/nest-starter-kit/tree/main/docs/project_structure.png" width="320" alt="Image Project structure" />
+  <img src="https://github.com/shamil8/nest-starter-kit/blob/main/docs/project_structure.png" width="320" alt="Image Project structure" />
 </p>
 
 ### .devops
