@@ -13,7 +13,7 @@ scrape_configs:
         refresh_interval: 15s
 #        filters: # TODO:: IMPROVE IT!!!
 #          - name: label
-#            values: ["com.docker.compose.project=cycle"]
+#            values: ["com.docker.compose.project=app"]
     # use container name to create a loki label
     relabel_configs:
       - source_labels: ['__meta_docker_container_name']

@@ -138,19 +138,19 @@ services - Module services, Example: wallet.service
 ```
 {
   "ok": true,
-  "result": {result - string, number, bool or Resource DTO}
+  "result": {result - string, number, boolean or ResourceDTO}
 }
 ```
 
 Success response example:
-```
+```json
 {
   "ok": true,
   "result": {
     "id": "9eccf36c-976b-4876-830d-72976cb449a1",
-    "firstname": "firstname",
-    "lastname": "lastname",
-    "email": "d29f9cbd-1da1-4a88-8f1c-5d38016cfed0@email.com"
+    "firstName": "Shamil",
+    "lastName": "Qurbonv",
+    "email": "qurbonovshamil@gmail.com"
   }
 }
 ```
@@ -163,17 +163,17 @@ Success response example:
   "timestamp": {Timestamp},
   "message": {ExceptionMessage},
   "localCode": {ExceptionLocalCode},
-  "args": {any object}
+  "args": {object}
 }
 ```
 
 Error response example:
-```
+```json
 {
   "ok": false,
   "statusCode": 429,
   "timestamp": "2024-05-24T11:36:58.434Z",
   "message": "Too Many Requests",
-  "localCode": 10001,
+  "localCode": 10001
 }
 ```
