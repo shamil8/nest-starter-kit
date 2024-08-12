@@ -15,6 +15,7 @@ services:
     links:
       - app-db
       - app-rabbit
+      - app-redis
     env_file:
       - .env.docker
     deploy:
@@ -22,20 +23,21 @@ services:
     ports:
       - "5001:5000"
 
+  # Redis service
   app-redis:
     image: redis:7-alpine
     container_name: app-redis
     restart: always
     ports:
       - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    command: redis-server --save 20 1 --loglevel warning --requirepass appRedisPass
     volumes:
       - redis:/data
 
   # Rabbit MQ
   app-rabbit:
     container_name: app-rabbit
-    image: rabbitmq:3.11.3-management
+    image: rabbitmq:3.13-management
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: "app"
@@ -50,11 +52,11 @@ services:
       timeout: 10s
       retries: 5
 
-  # Postgres SQL
+  # PostgreSQL Database service
   app-db:
-    image: postgres:15.1
+    image: 'bitnami/postgresql:16'
     volumes:
-      - ./volumes/db-data:/var/lib/postgresql/data
+      - ./volumes/db-data:/bitnami/postgresql/data
     container_name: app-db
     restart: always
     environment:

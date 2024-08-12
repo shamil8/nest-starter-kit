@@ -1,0 +1,67 @@
+# This file created only for Backend DEVELOPERS not for CI-CD Don't use it DevOps!!!
+version: "3.9"
+
+services:
+  # Redis service
+  app-redis:
+    image: redis:7-alpine
+    container_name: app-redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass appRedisPass
+    volumes:
+      - redis:/data
+
+  # RabbitMQ service
+  app-rabbit:
+    container_name: app-rabbit
+    image: rabbitmq:3.13-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: "app"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/app"
+    ports:
+      - "15673:15672" # Rabbit Management url: http://127.0.0.1:15673/
+      - "5673:5672"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # PostgreSQL Database service
+  app-db:
+    image: 'bitnami/postgresql:16'
+    volumes:
+      - ./volumes/db-data:/bitnami/postgresql/data
+#      - ./volumes/pg_hba.conf:/bitnami/postgresql/conf/pg_hba.conf
+    container_name: app-db
+    restart: always
+    environment:
+      POSTGRES_USER: "app"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "app_db"
+    ports:
+      - "5433:5432"
+
+  # Adminer for database management
+  app-adminer:
+    image: adminer:latest
+    container_name: app-adminer
+    links:
+      - app-db
+    restart: always
+    ports:
+      - "8082:8080"  # port for adminer 8082
+    volumes:
+      - ./database/adminer.css:/var/www/html/adminer.css # Mount the adminer style
+
+volumes:
+  redis:
+    driver: local
+
+networks:
+  default:
+    name: app-network

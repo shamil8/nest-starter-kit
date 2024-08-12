@@ -1,140 +1,129 @@
 # NestJS Starter Kit
 
-The repository provides examples of the main toolkit used to write a basic service on the NestJS framework.
+This repository provides examples of the main toolkit used to build a basic service using the NestJS framework.
 
-### Required
+## Requirements
 
-1. NodeJS v20+
-2. Postgres 15.3+
-3. RabbitMQ 3.11.3+
-4. Redis 7.2+
+- **NodeJS**: v20+
+- **PostgreSQL**: 16.0+
+- **RabbitMQ**: 3.13+
+- **Redis**: 7.2+
 
-### Service start:
+## Getting Started
 
-1. Create `.env` file from `env.local`
-2. Install node-modules
-```
-yarn install
-```
-3. Start tests
-```
-yarn test
-```
-4. Start server
-```
-yarn start
-```
+### 1. Environment Setup
 
-5. Checkout swagger (Default: http://localhost:3000/api/docs)
+- Create a `.env` file by copying `env.local`:
+  ```bash
+  cp .env.local .env
+  ```
+### 2. Install Dependencies
+- Install the required Node modules:
+  ```bash
+  yarn install
+  ```
 
-### Docker build for developers
-```
+### 3. Run Tests
+- Start the test suite:
+  ```bash
+  yarn test
+  ```
+
+### 4. Start the Server
+- Launch the development server:
+  ```bash
+  yarn start:dev
+  ```
+
+- Access Swagger API documentation at http://localhost:5000/api/docs (default).
+
+## Docker Setup for Developers
+
+### Option 1: Using Docker Compose
+- Navigate to the docker directory and start the services:
+```bash
 cd docker
 
-docker-compose up
+docker-compose -f docker-compose.local.yml up -d
+```
 
-`or`
+- Access RabbitMQ Management at http://localhost:15673.
+  - **Username**: `app`
+  - **Password**: `rabbitmq`
 
+- Access Adminer at http://localhost:8082.
+  - **System**: PostgreSQL
+  - **Server**: `app-db`
+  - **Username**: `app`
+  - **Password**: `root`
+  - **Database**: `app_db`
+
+### Option 2: Building and Running Docker Image
+- Build the Docker image:
+```bash
 docker build -t app-backend:latest -f docker/Dockerfile .
+```
 
+- Run the Docker container:
+```bash
 docker run --name app-backend -d -p 5001:5000 app-backend:latest --env-file=.env
 ```
 
-### Files naming
+## File Naming Conventions
 
-```
-{name}.{resource_type}.ts
-{name}.{resource_type}.spec.ts - For unit tests.
-```
+- Source files: `{name}.{resource_type}.ts`
+- Unit tests: `{name}.{resource_type}.spec.ts`
 
-### Project structure
+
+## Project Structure
 <p align="center">
-  <img src="https://github.com/shamil8/nest-starter-kit/blob/main/docs/project_structure.png" width="320" alt="Image Project structure" />
+  <img src="https://github.com/shamil8/nest-starter-kit/blob/main/docs/project_structure.png" width="320" alt="Img Project structure" />
 </p>
 
-### .devops
-Contains DevOps scripts helping with deployment or automating its activities.
+## Directory Overview
 
-### .devtools
-Developer scripts automating their activities.
+- **`.devops`**: Contains DevOps scripts for deployment and automation.
+- **`.devtools`**: Developer scripts for automating common tasks.
+- **`Makefile`**: Bash scripts for automation tasks.
+- **`libs`**: Business logic libraries.
+- **`crypton-libs`**: Project-wide entities, interfaces, and symbols.
+- **`contracts`**: Contracts for microservice interaction.
+- **`src`**: Core application code and configuration.
+  - **`config`**: Validation for `.env` files.
+  - **`console`**: Application-level console commands.
+  - **`constants`**: Application-level constants.
+  - **`enums`**: Application-level enumerations.
+  - **`filters`**: Error filters and handlers.
+  - **`i18n`**: Language files (JSON).
+  - **`migration`**: Raw database migrations.
+  - **`jobs`**: Kafka and RabbitMQ message handlers.
 
-### Makefile
-Contains bash scripts for automation.
+## Module Structure
 
-### libs
-Business libraries.
+Each module follows this structure:
 
-### crypton-libs
-Library containing project-wide entities, objects, interfaces, symbols.
-
-### contracts
-Contains contracts for microservices interaction.
-
-### src
-config - Contains validation for .env.
-
-console - Application-level console commands.
-
-constants - Application-level constants.
-
-enums - Application-level enumerations.
-
-filters - Error filters / error handling and error response formation.
-
-i18n - Language JSON files.
-
-migration - Contains raw migrations.
-
-jobs - Kafka message handlers, RabbitMQ message handlers.
-
-
-```
-modules
-<name>.module.ts
-
-<module name>
-config - Service for retrieving module configuration.
-
-Example: wallet.index.ts
-
-console - Console command services for the module.
-
-Example: wallet-pull.console.ts
-
-constants - Module constants.
-
-controllers
-Example: wallet.controller.ts
-
-dto
-command - Data-changing commands, Example: balance-up.command.ts
-
-query - Data querying, Example: balance-up.query.ts
-
-resource - Data serving, Example: balance.resource.ts
-
-enums - Module enumerations, for example, route.ts, event-id.ts
-
-events
-Event DTOs
-
-listeners - Event handlers
-
-i18n - Language JSON files for this module
-
-jobs - Rabbit, Kafka queue handlers
-
-entities - Models/entities, Example: wallet.entity.ts
-
-repositories - Repositories, Example: wallet.repository.ts
-
-services - Module services, Example: wallet.service
-```
+- **`<name>.module.ts`**: Module definition.
+- **`config`**: Module configuration services (e.g., `wallet.index.ts`).
+- **`console`**: Console command services (e.g., `wallet-pull.console.ts`).
+- **`constants`**: Module-specific constants.
+- **`controllers`**: HTTP controllers (e.g., `wallet.controller.ts`).
+- **`dto`**:
+  - **`command`**: Data-modifying commands (e.g., `balance-up.command.ts`).
+  - **`query`**: Data-querying commands (e.g., `balance-up.query.ts`).
+  - **`resource`**: Data resources (e.g., `balance.resource.ts`).
+- **`enums`**: Module-specific enumerations.
+- **`events`**: Event DTOs.
+- **`listeners`**: Event handlers.
+- **`i18n`**: Module-specific language files.
+- **`jobs`**: RabbitMQ and Kafka queue handlers.
+- **`entities`**: Models and entities (e.g., `wallet.entity.ts`).
+- **`repositories`**: Data repositories (e.g., `wallet.repository.ts`).
+- **`services`**: Module services (e.g., `wallet.service.ts`).
 
 
-### Server responses
+## API Response Structure
 
-**Success response structure:**
+### Success Response
 ```
 {
   "ok": true,
@@ -142,20 +131,20 @@ services - Module services, Example: wallet.service
 }
 ```
 
-Success response example:
+- Success response example:
 ```json
 {
   "ok": true,
   "result": {
-    "id": "9eccf36c-976b-4876-830d-72976cb449a1",
+    "id": "CU7ZA69G68T8",
     "firstName": "Shamil",
-    "lastName": "Qurbonv",
+    "lastName": "Kurbonov",
     "email": "qurbonovshamil@gmail.com"
   }
 }
 ```
 
-**Error response structure:**
+### Error Response:
 ```
 {
   "ok": false,
@@ -167,7 +156,7 @@ Success response example:
 }
 ```
 
-Error response example:
+- Error response example:
 ```json
 {
   "ok": false,

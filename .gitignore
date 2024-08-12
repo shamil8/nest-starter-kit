@@ -6,6 +6,8 @@
 # docs
 /documentation
 
+docker/volumes/
+
 # Logs
 logs
 *.log
