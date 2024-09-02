@@ -1,8 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { getNANOID } from '@app/crypto-utils/functions/export-settings';
 import { FindAndCountType } from '@app/crypto-utils/interfaces/find-and-count.type';
 import { LoggerService } from '@app/logger/services/logger.service';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { ExceptionLocalCode } from '../../../enums/exception-local-code';
 import { ExceptionMessage } from '../../../enums/exception-message';
@@ -36,21 +37,23 @@ export class UserRepository {
   async findByColumn<TColumn extends keyof UserEntity>(
     column: TColumn,
     value: UserEntity[TColumn],
-    options?: FindOneOptions<UserEntity>,
+    select?: (keyof UserEntity)[],
   ): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
-      ...options,
-      where: { [column]: value },
-    });
+    const builder = this.userRepository.createQueryBuilder('user');
+
+    if (select && select.length > 0) {
+      const selectWithAlias = select.map((col) => `user.${col}`);
+
+      builder.select(selectWithAlias);
+    }
+
+    const user = await builder
+      .where(`user.${column} = :value`, { value })
+      .getOne();
 
     if (user) {
       return user;
     }
-
-    this.logger.debug(ExceptionMessage.USER_NOT_FOUND, {
-      stack: `${this.findByColumn.name} with column: ${column}`,
-      params: { [column]: value },
-    });
 
     throw new AppHttpException(
       ExceptionMessage.USER_NOT_FOUND,
@@ -61,13 +64,21 @@ export class UserRepository {
 
   async storeUser(
     command: StoreUserCommand,
-    role = UserRole.USER_ROLE,
+    role = UserRole.USER,
   ): Promise<UserEntity> {
     const user = this.userRepository.create({
-      ...command,
+      email: command.email,
+      password: command.password,
+      firstName: command.firstName,
+      lastName: command.lastName,
+      username: this.getUsernameFromEmail(command.email),
       role,
     });
 
     return this.userRepository.save(user);
+  }
+
+  getUsernameFromEmail(email: string): string {
+    return `${email.split('@')[0]}_${getNANOID()}`;
   }
 }

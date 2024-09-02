@@ -1,35 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from '../../entities/user.entity';
+import { UserBaseResource } from './user-base.resource';
 
-export class UserResource {
-  @ApiProperty({
-    required: true,
-    example: 'EKFKV2WCDJK8',
-    description: 'User ID',
-  })
-  id!: string;
-
-  @ApiProperty({
-    required: true,
-    example: 'example@test.com',
-    description: 'The email of user',
-  })
-  email!: string;
+export class UserResource extends UserBaseResource {
+  static readonly select: (keyof UserEntity)[] = [];
 
   @ApiProperty({ required: false, example: 'Shamil', description: 'User name' })
   firstName?: string;
 
   @ApiProperty({
     required: false,
-    example: 'Qurbonov',
+    example: 'Kurbonov',
     description: 'User last name',
   })
   lastName?: string;
 
   constructor(entity: UserEntity) {
-    this.id = entity.id;
-    this.email = entity.email;
+    super(entity);
+
     this.firstName = entity.firstName;
     this.lastName = entity.lastName;
   }

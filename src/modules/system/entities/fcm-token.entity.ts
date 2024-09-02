@@ -7,7 +7,7 @@ import { FcmPlatformType } from '../enums/fcm-platform-type';
 @Entity({ name: 'fcm_tokens', schema: 'system' })
 @Unique(['userId', 'deviceId'])
 export class FcmTokenEntity extends BaseEntity {
-  @Column({ type: 'varchar', length: 4096 })
+  @Column({ type: 'text' })
   token!: string;
 
   @Column({ type: 'varchar', length: 15 })

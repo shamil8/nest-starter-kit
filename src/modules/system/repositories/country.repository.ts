@@ -18,9 +18,11 @@ export class CountryRepository {
   ) {}
 
   async findById(countryId: string): Promise<CountryEntity> {
-    const country = await this.countryRepository.findOne({
-      where: { id: countryId },
-    });
+    const builder = this.countryRepository.createQueryBuilder('c');
+
+    const country = await builder
+      .where('c.id = :id', { id: countryId })
+      .getOne();
 
     if (country) {
       return country;
@@ -34,12 +36,16 @@ export class CountryRepository {
   }
 
   async getCountryByCode(code: string): Promise<CountryEntity | null> {
-    return this.countryRepository.findOne({ where: { code } });
+    const builder = this.countryRepository
+      .createQueryBuilder('c')
+      .where('c.code = :code', { code });
+
+    return builder.getOne();
   }
 
   async getAllCountries(): Promise<CountryEntity[]> {
-    return this.countryRepository.find({
-      order: { name: Direction.ASC },
-    });
+    const builder = this.countryRepository.createQueryBuilder('c');
+
+    return builder.orderBy('c.name', Direction.ASC).getMany();
   }
 }

@@ -53,6 +53,6 @@ export class SystemController {
     @Request() { user }: RequestInterface,
     @Body() command: AddFcmTokenCommand,
   ): Promise<boolean> {
-    return this.systemService.addFcmToken(user.id, command);
+    return this.systemService.addFcmToken(user, command);
   }
 }

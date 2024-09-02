@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CountryEntity } from '../../entities/country.entity';
 
 export class CountryResource {
+  static readonly select: (keyof CountryEntity)[] = [];
+
   @ApiProperty({
     example: 'JHVYBD1DPUG0',
     description: 'The unique identifier for the country.',

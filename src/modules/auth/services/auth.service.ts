@@ -37,11 +37,13 @@ export class AuthService {
   }
 
   async login(command: AuthCommand): Promise<JwtResponseResource> {
-    const user = await this.userService.findByEmail(command.email, {
-      select: ['id', 'password'],
-    });
+    const user = await this.userService.findByEmail(command.email, [
+      'id',
+      'password',
+      'role',
+    ]);
 
-    if (!user || !user.passwordCompare(command.password)) {
+    if (!user || !user.validatePassword(command.password)) {
       throw new AppHttpException(
         ExceptionMessage.WRONG_PASSWORD,
         HttpStatus.FORBIDDEN,
@@ -49,6 +51,19 @@ export class AuthService {
       );
     }
 
-    return this.createTokens({ id: user.id });
+    return this.createTokens({ id: user.id, role: user.role });
+  }
+
+  async refreshToken(refresh: string): Promise<JwtResponseResource> {
+    /** payload with exp and iat */
+    const payload =
+      await this.jwtService.verifyAsync<JwtValidatePayloadInterface>(refresh, {
+        secret: this.authConfig.jwt.refresh.secret,
+      });
+
+    delete payload.exp;
+    delete payload.iat;
+
+    return this.createTokens(payload);
   }
 }

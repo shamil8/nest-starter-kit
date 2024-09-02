@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserCoreResource } from '../../users/dto/resource/user-core.resource';
 
 export interface RequestInterface extends Request {
-  user: UserEntity;
+  user: UserCoreResource;
 }

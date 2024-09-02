@@ -3,6 +3,7 @@ import { LoggerService } from '@app/logger/services/logger.service';
 import { ProducerService } from '@app/rabbit/services/producer.service';
 
 import { QueueNotification } from '../../../enums/queue-notification';
+import { UserCoreResource } from '../../users/dto/resource/user-core.resource';
 import { AddFcmTokenCommand } from '../dto/command/add-fcm-token.command';
 import { CountryResource } from '../dto/resource/country.resource';
 import { CountryEntity } from '../entities/country.entity';
@@ -26,31 +27,29 @@ export class SystemService {
   }
 
   async addFcmToken(
-    userId: string,
+    user: UserCoreResource,
     command: AddFcmTokenCommand,
   ): Promise<boolean> {
     const fcmToken = await this.fcmTokenRepository.findByDeviceId(
-      userId,
+      user.id,
       command.deviceId,
     );
 
     if (!fcmToken) {
-      await this.fcmTokenRepository.createFcmToken(userId, command);
+      await this.fcmTokenRepository.createFcmToken(user.id, command);
     } else if (fcmToken.token != command.token) {
       await this.fcmTokenRepository.updateFcmToken(fcmToken.id, command.token);
     }
 
     /** Push to notice-service for subscribe to all topics */
     if (!fcmToken || fcmToken.token != command.token) {
-      const payload: SendFcmTokenInterface = {
-        userId,
-        token: command.token,
-        topics: command.topics,
-      };
-
-      await this.producerService.addMessage(
+      await this.producerService.addMessage<SendFcmTokenInterface>(
         QueueNotification.sendFcmToken,
-        payload,
+        {
+          userId: user.id,
+          token: command.token,
+          topics: [...command.topics, user.langCode],
+        },
       );
     }
 

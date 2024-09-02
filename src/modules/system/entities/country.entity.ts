@@ -14,7 +14,7 @@ export class CountryEntity extends BaseEntity {
   @Column({ nullable: true })
   sign?: string;
 
-  @Column('boolean', { default: false, nullable: true })
+  @Column('boolean', { default: false })
   isAvailable?: boolean;
 
   @OneToMany(() => UserEntity, (user) => user.country)
